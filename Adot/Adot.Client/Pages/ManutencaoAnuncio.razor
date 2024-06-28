@@ -1,0 +1,74 @@
+﻿@page "/manutencaoanuncio"
+@page "/manutencaoanuncio/{id:int}"
+@rendermode InteractiveAuto
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">Manutenção</div>
+                <div class="card-body">
+                    <EditForm Model="AnuncioModel" OnValidSubmit="HandleSalvar" FormName="Anuncio">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="form-group">
+                            <label class="form-label">Titulo</label>
+                            <InputText @bind-Value="AnuncioModel.Titulo" class="form-control"></InputText>
+                            <ValidationMessage For="()=>AnuncioModel.Titulo"></ValidationMessage>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descricao</label>
+                            <InputText @bind-Value="AnuncioModel.Descricao" class="form-control"></InputText>
+                            <ValidationMessage For="()=>AnuncioModel.Descricao"></ValidationMessage>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Imagem</label>
+                            <InputText @bind-Value="AnuncioModel.Imagem" class="form-control"></InputText>
+                            <ValidationMessage For="()=>AnuncioModel.Imagem"></ValidationMessage>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2"> Salvar</button>
+                    </EditForm>
+                </div>
+
+                <div class="card-footer">
+                    @* Id: @ReturnAnuncio.Id <br /> *@
+                    Titulo:@ReturnAnuncio.Titulo
+                    Descricao:@ReturnAnuncio.Descricao
+                    Imagem:<img src="@ReturnAnuncio.Imagem" alt="Imagem" width="100" height="100" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public Anuncio AnuncioModel { get; set; } = new();
+    [Parameter] public int Id { get; set; }
+
+    private Anuncio ReturnAnuncio = new();
+
+    private async Task HandleSalvar()
+    {
+        if (AnuncioModel.Id > 0)
+        {
+            AnuncioModel.EhMeuAnuncio = true;
+            AnuncioModel.UsuarioNome = "Eu";
+            ReturnAnuncio = await _anuncioService.UpdateAnuncioAsync(AnuncioModel);
+            AnuncioModel = new();
+        }
+        else
+        {
+            AnuncioModel.EhMeuAnuncio = true;
+            AnuncioModel.UsuarioNome = "Eu";
+            ReturnAnuncio = await _anuncioService.AddAnuncioAsync(AnuncioModel);
+            AnuncioModel = new();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+            AnuncioModel = await _anuncioService.GetAnuncioAsync(Id);
+    }
+}

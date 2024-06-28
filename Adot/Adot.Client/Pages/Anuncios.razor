@@ -1,0 +1,100 @@
+﻿@page "/anuncios"
+@rendermode InteractiveServer
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn btn-primary float-end"
+                                @onclick="NavigateToAddAnuncioPage">
+                            Nova Anuncio
+                        </button>
+                    </div>
+                </div>
+                @if (AnunciosList.Count > 0)
+                {
+                    <div class="card-header">
+                        Lista de Anuncios
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Imagem</th>
+                                    <th>Id</th>
+                                    <th>Titulo</th>
+                                    <th>DataCriacao</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var anuncio in AnunciosList)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="@anuncio.Imagem" alt="Imagem" width="100" height="100" />
+                                        </td>
+                                        <td>@anuncio.Id</td>
+                                        <td>@anuncio.Titulo</td>
+                                        <td>@anuncio.Descricao</td>
+                                        <td>
+                                            <div class="hstack gap-2">
+                                                <button class="btn  btn-info" @onclick="()=>Edit(anuncio)"> Edita</button>
+                                                <button class="btn  btn-danger" @onclick="() => Delete(anuncio.Id)"> Deleta</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info"> Nenhum anuncio </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Anuncio> AnunciosList { get; set; } = new();
+    private async Task CarregaAnuncios()
+    {
+        var anuncios = await _anuncioService.GetAllAnunciosAsync();
+
+        AnunciosList?.Clear();
+
+        if (AnunciosList is null) return;
+
+        foreach (var anuncio in anuncios)
+            AnunciosList.Add(anuncio);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregaAnuncios();
+    }
+
+    //incluir
+    private void NavigateToAddAnuncioPage()
+    {
+        _navigation.NavigateTo("manutencaoanuncio");
+    }
+
+    //editar
+    private void Edit(Anuncio model)
+    {
+        _navigation.NavigateTo($"manutencaoanuncio/{model.Id}");
+    }
+
+    //deletar
+    private async Task Delete(int id)
+    {
+        var anuncio = await _anuncioService.DeleteAnuncioAsync(id);
+        await CarregaAnuncios();
+    }
+}

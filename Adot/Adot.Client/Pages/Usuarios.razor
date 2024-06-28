@@ -1,0 +1,100 @@
+﻿@page "/usuarios"
+@rendermode InteractiveServer
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn btn-primary float-end"
+                                @onclick="NavigateToAddUsuarioPage">
+                            Nova Usuario
+                        </button>
+                    </div>
+                </div>
+                @if (UsuariosList.Count > 0)
+                {
+                    <div class="card-header">
+                        Lista de Usuarios
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Imagem</th>
+                                    <th>Id</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var usuario in UsuariosList)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="@usuario.Imagem" alt="Imagem" width="100" height="100" />
+                                        </td>
+                                        <td>@usuario.Id</td>
+                                        <td>@usuario.Nome</td>
+                                        <td>@usuario.Email</td>
+                                        <td>
+                                            <div class="hstack gap-2">
+                                                <button class="btn  btn-info" @onclick="()=>Edit(usuario)"> Edita</button>
+                                                <button class="btn  btn-danger" @onclick="() => Delete(usuario.Id)"> Deleta</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info"> Nenhum usuario </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Usuario> UsuariosList { get; set; } = new();
+    private async Task CarregaUsuarios()
+    {
+        var usuarios = await _usuarioService.GetAllUsuariosAsync();
+
+        UsuariosList?.Clear();
+
+        if (UsuariosList is null) return;
+
+        foreach (var usuario in usuarios)
+            UsuariosList.Add(usuario);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregaUsuarios();
+    }
+
+    //incluir
+    private void NavigateToAddUsuarioPage()
+    {
+        _navigation.NavigateTo("manutencaousuario");
+    }
+
+    //editar
+    private void Edit(Usuario model)
+    {
+        _navigation.NavigateTo($"manutencaousuario/{model.Id}");
+    }
+
+    //deletar
+    private async Task Delete(int id)
+    {
+        var usuario = await _usuarioService.DeleteUsuarioAsync(id);
+        await CarregaUsuarios();
+    }
+}

@@ -1,0 +1,70 @@
+﻿@page "/manutencaousuario"
+@page "/manutencaousuario/{id:int}"
+@rendermode InteractiveAuto
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">Manutenção</div>
+                <div class="card-body">
+                    <EditForm Model="UsuarioModel" OnValidSubmit="HandleSalvar" FormName="Usuario">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="form-group">
+                            <label class="form-label">Nome</label>
+                            <InputText @bind-Value="UsuarioModel.Nome" class="form-control"></InputText>
+                            <ValidationMessage For="()=>UsuarioModel.Nome"></ValidationMessage>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <InputText @bind-Value="UsuarioModel.Email" class="form-control"></InputText>
+                            <ValidationMessage For="()=>UsuarioModel.Email"></ValidationMessage>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Imagem</label>
+                            <InputText @bind-Value="UsuarioModel.Imagem" class="form-control"></InputText>
+                            <ValidationMessage For="()=>UsuarioModel.Imagem"></ValidationMessage>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2"> Salvar</button>
+                    </EditForm>
+                </div>
+
+                <div class="card-footer">
+                    @* Id: @ReturnUsuario.Id <br /> *@
+                    Nome:@ReturnUsuario.Nome
+                    Email:@ReturnUsuario.Email
+                    Imagem:<img src="@ReturnUsuario.Imagem" alt="Imagem" width="100" height="100" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public Usuario UsuarioModel { get; set; } = new();
+    [Parameter] public int Id { get; set; }
+
+    private Usuario ReturnUsuario = new();
+
+    private async Task HandleSalvar()
+    {
+        if (UsuarioModel.Id > 0)
+        {
+            ReturnUsuario = await _usuarioService.UpdateUsuarioAsync(UsuarioModel);
+            UsuarioModel = new();
+        }
+        else
+        {
+            ReturnUsuario = await _usuarioService.AddUsuarioAsync(UsuarioModel);
+            UsuarioModel = new();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+            UsuarioModel = await _usuarioService.GetUsuarioAsync(Id);
+    }
+}
