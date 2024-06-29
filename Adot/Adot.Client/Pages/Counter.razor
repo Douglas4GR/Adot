@@ -2,18 +2,46 @@
 @rendermode InteractiveAuto
 
 <PageTitle>Meu Perfil</PageTitle>
-
-<h1>Meu Perfil</h1>
-
-<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2>Meu Perfil</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-4 text-center">
+                            <img src="@eu.Imagem" class="img-fluid rounded-circle mb-3" alt="Imagem do perfil" width="150" height="150" />
+                        </div>
+                        <div class="col-8">
+                            <h4 class="card-title">@eu.Nome</h4>
+                            <p class="card-text"><strong>Email:</strong> @eu.Email</p>
+                            <button class="btn btn-primary" @onclick="() => Edit(eu)">Editar</button>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
-    private int currentCount = 0;
+    private Usuario eu { get; set; } = new();
 
-    private void IncrementCount()
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        await CarregaUsuario();
+    }
+
+    private async Task CarregaUsuario()
+    {
+        eu = await _usuarioService.GetUsuarioAsync(1);
+    }
+
+    private void Edit(Usuario model)
+    {
+        _navigation.NavigateTo($"manutencaousuario/{model.Id}");
     }
 }

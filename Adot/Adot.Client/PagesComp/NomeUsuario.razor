@@ -1,0 +1,14 @@
+﻿<h3>@eu.Nome</h3>
+
+
+@code {
+    private Usuario eu { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregaUsuario();
+    }
+    private async Task CarregaUsuario()
+    {
+        eu = await _usuarioService.GetUsuarioAsync(1);
+    }
+}

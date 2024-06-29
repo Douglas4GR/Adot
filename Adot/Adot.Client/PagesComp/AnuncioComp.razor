@@ -1,0 +1,77 @@
+﻿@page "/anunciocomp"
+@rendermode InteractiveAuto
+<div class="container-fluid">
+    <div class="row justify-content-center mb-5 mt-3">
+        <div class="col-lg-10">
+            <!-- barra de busca -->
+            <input type="text" class="form-control" placeholder="Pesquisar por título" @oninput="@(e => PesquisaAnuncio(e.Value.ToString()))" />
+        </div>
+    </div>
+    <div class="row">
+        <!-- anuncios listados -->
+        @foreach (var anuncio in AnunciosFiltrados)
+        {
+            <div class="col-lg-3 col-sm-12 mb-5">
+                <div class="card h-100" style="width: 18rem;">
+                    <img class="card-img-top" src="@anuncio.Imagem" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">@anuncio.Titulo</h5>
+                        <p class="card-text">@anuncio.Descricao</p>
+                        @if (anuncio.EhMeuAnuncio)
+                        {
+                            <button class="btn btn-lg btn-block btn-outline-info" @onclick="()=>Edit(anuncio)"> Editar</button>
+                        }
+                        else
+                        {
+                            <a href="#" class="btn btn-lg btn-block btn-outline-info">Ver</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Anuncio> AnunciosList { get; set; } = new();
+    private List<Anuncio> AnunciosFiltrados { get; set; } = new();
+
+    private async Task CarregaAnuncios()
+    {
+        var anuncios = await _anuncioService.GetAllAnunciosAsync();
+
+        AnunciosList?.Clear();
+        AnunciosFiltrados?.Clear();
+
+        if (AnunciosList is null) return;
+
+        foreach (var anuncio in anuncios)
+        {
+            AnunciosList.Add(anuncio);
+            AnunciosFiltrados.Add(anuncio);
+        }
+    }
+
+    private void PesquisaAnuncio(string titulo)
+    {
+        if (string.IsNullOrEmpty(titulo))
+        {
+            AnunciosFiltrados = AnunciosList.ToList();
+        }
+        else
+        {
+            AnunciosFiltrados = AnunciosList.Where(x => x.Titulo.Contains(titulo, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
+
+    //editar
+    private void Edit(Anuncio model)
+    {
+        _navigation.NavigateTo($"manutencaoanuncio/{model.Id}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregaAnuncios();
+    }
+}

@@ -1,15 +1,23 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
+<div class="page"
+    style="
+background: rgb(22,70,128);
+background: linear-gradient(0deg, rgba(22,70,128,1) 0%, rgba(70,117,174,1) 10%, rgba(122,168,223,1) 29%, rgba(142,188,242,1) 60%, rgba(205,181,143,1) 84%, rgba(252,176,69,1) 97%);">
     <div class="sidebar">
         <NavMenu />
     </div>
-
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+            <div class="row">
+                <div class="col-auto">
+                </div>
+                <div class="col-auto"> 
+                    <button class="btn btn-danger">Logout</button>
+                </div>
 
+            </div>
+        </div>
         <article class="content px-4">
             @Body
         </article>
@@ -21,3 +29,4 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
