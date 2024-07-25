@@ -34,7 +34,7 @@ Este projeto é uma aplicação web desenvolvida com ASP.NET Core e Blazor, foca
 # Estrutura do Projeto
 ```plaintext
 .
-├── PetAdoptionAndChat
+├── Adot
 │   ├── Client
 │   │   ├── Pages
 │   │   │   ├── AdoptPets.razor
