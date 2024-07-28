@@ -22,8 +22,6 @@ Este projeto é uma aplicação web desenvolvida com ASP.NET Core e Blazor, foca
 - Inserir novo pet para adoção
 - Listar pets disponíveis para adoção
 - Iniciar processo de adoção de um pet específico
-- Criar nova sala de chat
-- Enviar mensagem em uma sala de chat existente
 
 ### E os esquemas:
 - Pet
