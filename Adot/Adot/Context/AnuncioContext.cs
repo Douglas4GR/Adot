@@ -7,6 +7,7 @@ namespace Adot.Context
     {
         public AnuncioContext(DbContextOptions options) : base(options)
         {
+
         }
 
         public DbSet<Anuncio> Anuncios { get; set; }
